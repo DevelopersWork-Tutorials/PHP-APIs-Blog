@@ -2,7 +2,7 @@
     $response = array();
     $connection = new mysqli("localhost","root","","blog");
 
-    if(!$connection){
+    if($connection->connect_error){
         $response["error"] = "CONNECTION FAILED";
         die();
     }else{
