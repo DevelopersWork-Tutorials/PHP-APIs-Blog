@@ -51,4 +51,20 @@ class Database{
         return $result;
     }
 
+    function insertSimple($tablename,$columnnames,$values){
+        // insert into tablename(columenames) values (values);
+
+        if($this->isConnected == false)
+            return false;
+
+        $query = "INSERT INTO ".$tablename." ".$columnnames." VALUES ".$values.";";
+
+        $result = $this->connection->query($query);
+
+        if(!$result)
+            return false;
+
+        return $result;
+    }
+
 }
