@@ -4,7 +4,7 @@
 
     if($connection->connect_error){
         $response["error"] = "CONNECTION FAILED";
-        die();
+        // die();
     }else{
         // echo "CONNECTION DONE<br>";
     }
@@ -21,7 +21,7 @@
     }
     else{
         $response["error"] = "QUERY FAILED";
-        die();
+        // die();
     }
 
     echo json_encode($response);

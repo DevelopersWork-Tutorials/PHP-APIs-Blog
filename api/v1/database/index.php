@@ -31,8 +31,31 @@ class Database{
             return false;
         }
         
-        $this->isConnected = true;
-        return true;
+        return $this->isConnected = $this->checkTemplate();
+    }
+
+    function checkTemplate(){
+        $query = "select 1 from blog_users LIMIT 1;";
+        $result1 = $this->connection->query($query);
+        
+        $query = "select 1 from blog_roles LIMIT 1;";
+        $result2 = $this->connection->query($query);
+
+        $query = "select 1 from blog_services LIMIT 1;";
+        $result3 = $this->connection->query($query);
+        
+        $query = "select 1 from blog_posts LIMIT 1;";
+        $result4 = $this->connection->query($query);
+
+        if($result1 && $result2 && $result3 && $result4){
+            return TRUE;
+        }
+
+        if($result1 || $result2 || $result3 || $result4){
+            return FALSE;
+        }
+
+        $this->importSQLFile();
     }
 
     function readSimple($tablename,$columnnames,$whereclause){
@@ -65,6 +88,29 @@ class Database{
             return false;
 
         return $result;
+    }
+
+    function importSQLFile(){
+        $filename = "\TEMPLATE.sql";
+        echo __DIR__;
+        $file = file(__DIR__.$filename);
+
+        $buffer = "";
+        foreach($file as $record){
+            if(substr($record,0,2) == "--" || $record == ""){
+                continue;
+            }
+            
+            $buffer = $buffer.$record;
+
+            if(substr(trim($record),-1,1) == ";"){
+                $result = $this->connection->query($buffer);
+                if(!$result){
+                    echo "FAILED : ".$buffer."<BR>";
+                }
+                $buffer = "";
+            }
+        }
     }
 
 }
