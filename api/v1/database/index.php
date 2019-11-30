@@ -55,7 +55,7 @@ class Database{
             return FALSE;
         }
 
-        $this->importSQLFile();
+        $this->importSQLFile("\TEMPLATE.sql");
     }
 
     function readSimple($tablename,$columnnames,$whereclause){
@@ -90,9 +90,8 @@ class Database{
         return $result;
     }
 
-    function importSQLFile(){
-        $filename = "\TEMPLATE.sql";
-        echo __DIR__;
+    function importSQLFile($filename){
+
         $file = file(__DIR__.$filename);
 
         $buffer = "";
@@ -100,17 +99,30 @@ class Database{
             if(substr($record,0,2) == "--" || $record == ""){
                 continue;
             }
-            
+
             $buffer = $buffer.$record;
 
             if(substr(trim($record),-1,1) == ";"){
                 $result = $this->connection->query($buffer);
-                if(!$result){
-                    echo "FAILED : ".$buffer."<BR>";
+                if(!$result){ 
+                    // echo "FAILED : ".$buffer."<BR>";
                 }
                 $buffer = "";
             }
         }
+    }
+
+    function createTable($tablename,$attributes){
+        // create table tablename(columnname datatype,..)
+
+        $query = "CREATE TABLE ".$tablename."(".$attributes.")";
+
+        $result = $this->connection->query($query);
+
+        if(!$result)
+            return false;
+
+        return $result;
     }
 
 }

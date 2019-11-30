@@ -65,4 +65,10 @@
         print_r($row);
     }
 
+    $result = $db->createTable("blog_users1","username varchar(25),password varchar(25)");
+
+    if($result){
+        echo "<br>DONE";
+    }
+
 ?>
