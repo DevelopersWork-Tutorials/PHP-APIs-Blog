@@ -11,7 +11,7 @@ class Database{
         $this->SERVER = "localhost";
         $this->USERNAME = "root";
         $this->PASSWORD = "";
-        $this->DATABASE = "test";
+        $this->DATABASE = "blog";
         $this->isConnected = false;
     }
 
@@ -65,7 +65,7 @@ class Database{
             return false;
 
         $query = "SELECT $columnnames FROM $tablename WHERE $whereColumn='$whereValue';";
-
+        // echo $query;
         $result = $this->connection->query($query);
 
         return $this->handleResponse($result);
@@ -140,7 +140,7 @@ class Database{
         $response = array();
         $response['query_error'] = false;
         if($result){
-            if($result == true)
+            if($result === true)
                 return $response;
             $i = 0; 
             while($row = $result->fetch_assoc()){
@@ -148,6 +148,7 @@ class Database{
                 $i += 1;
             }
             $response["length"] = $i;
+            // print_r($response);
         }else
             $response["query_error"] = $this->connection->error;
 
