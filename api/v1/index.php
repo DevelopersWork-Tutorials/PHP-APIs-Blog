@@ -16,12 +16,19 @@ class V1{
       $auth = new Autheticate($db);
 
       $response = array();
-      
+      $response["data"] = array();
       switch($route){
         case "/login":
           // echo "LOGIN PAGE";
           $auth->login($_POST);
           $response = $auth->getResponse();
+          break;
+        case "/logout":
+          $auth->logout();
+          $response = $auth->getResponse();
+          break;
+        case "/isUserLoggedIn": 
+          $response = $auth->isLoggedIn();
           break;
         case "/register":
           // echo "REGISTER PAGE";

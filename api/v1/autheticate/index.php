@@ -69,6 +69,28 @@ class Autheticate{
     return $this->setResponse();
   }
 
+  function logout(){
+    $this->response["data"] = array(
+      "username" => $_SESSION["username"]
+    );
+    $this->status = 200;
+    unset($_SESSION);
+    session_destroy();
+    return $this->setResponse();
+  }
+
+  function isLoggedIn(){
+    $response = array();
+    if(isset($_SESSION["username"]) && isset($_POST["username"]))
+      if($_SESSION["username"] == $_POST["username"]){
+        $response["data"]["session"] = true;
+      }
+    if(!isset($response["data"]["session"]))
+      $response["data"]["session"] = false;
+
+    return $response;
+  }
+
 
   function setResponse(){
     // echo $this->status;
