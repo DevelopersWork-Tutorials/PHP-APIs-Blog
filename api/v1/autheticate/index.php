@@ -16,6 +16,17 @@ class Autheticate{
       $this->status = 400;
       return $this->setResponse();
     }
+    if(isset($_SESSION["uid"]) && isset($_SESSION["username"])){
+      if($request["username"] == $_SESSION["username"]){
+        if($request["password"] == $_SESSION["password"]){
+          $this->status = 1;
+        }
+      }
+    }
+    if($this->status == 1){
+      $this->status = 200;
+      return $this->setResponse();
+    }
 
     $result = $this->db->readSimple("blog_users","*","username",$request["username"]);
 
@@ -44,17 +55,31 @@ class Autheticate{
     if(md5($request["password"]) == $password){
       // echo "MATCHED";
       $this->status = 200;
+      $_SESSION["uid"] = $uid;
+      $_SESSION["username"] = $request["username"];
+      $_SESSION["password"] = $password;
+
+      $this->response["data"] = array(
+        "uid" => $_SESSION["uid"]
+      );
+
     }else{
-      $this->status = 404;
+      $this->status = 400;
     }
     return $this->setResponse();
   }
 
+
   function setResponse(){
+    // echo $this->status;
     if($this->status == 200){
       $this->response["status"] = 200;
     }else{
       $this->response["status"] = 400;
+      $this->response["data"] = array(
+        "code" => "auth/incorrect-details",
+        "message" => "authetication failed due to incorrect"
+      );
     }
   }
 
