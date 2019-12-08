@@ -58,20 +58,17 @@ class Database{
         $this->importSQLFile("\TEMPLATE.sql");
     }
 
-    function readSimple($tablename,$columnnames,$whereclause){
+    function readSimple($tablename,$columnnames,$whereColumn,$whereValue){
         // select (columnnames) from tablename where col1=val;
 
         if($this->isConnected == false)
             return false;
 
-        $query = "SELECT ".$columnnames." FROM ".$tablename." WHERE ".$whereclause.";";
+        $query = "SELECT $columnnames FROM $tablename WHERE $whereColumn='$whereValue';";
 
         $result = $this->connection->query($query);
 
-        if(!$result)
-            return false;
-
-        return $result;
+        return $this->handleResponse($result);
     }
 
     function insertSimple($tablename,$columnnames,$values){
@@ -80,14 +77,24 @@ class Database{
         if($this->isConnected == false)
             return false;
 
-        $query = "INSERT INTO ".$tablename." ".$columnnames." VALUES ".$values.";";
+        $query = "INSERT INTO $tablename ($columnnames) VALUES ($values);";
 
         $result = $this->connection->query($query);
 
-        if(!$result)
+        return $this->handleResponse($result);
+    }
+
+    function updateSimple($tablename,$columnname,$value,$whereColumn,$whereValue){
+        // update tablename set columnname=value where ....
+
+        if($this->isConnected == false)
             return false;
 
-        return $result;
+        $query = "UDPATE $tablename SET $columnname='$value' WHERE $whereColumn='$whereValue';";
+
+        $result = $this->connection->query($query);
+
+        return $this->handleResponse($result);
     }
 
     function importSQLFile($filename){
@@ -119,10 +126,32 @@ class Database{
 
         $result = $this->connection->query($query);
 
-        if(!$result)
-            return false;
+        return $this->handleResponse($result);
+    }
 
-        return $result;
+    function query($query){
+        // Any query required
+        $result = $this->connection->query($query);
+
+        return $this->handleResponse($result);
+    }
+
+    function handleResponse($result){
+        $response = array();
+        $response['query_error'] = false;
+        if($result){
+            if($result == true)
+                return $response;
+            $i = 0; 
+            while($row = $result->fetch_assoc()){
+                array_push($response,$row);
+                $i += 1;
+            }
+            $response["length"] = $i;
+        }else
+            $response["query_error"] = $this->connection->error;
+
+        return $response;
     }
 
 }
