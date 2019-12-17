@@ -12,6 +12,21 @@ class V1{
     function handleRoute($route){
       $db = new Database();
       $db->connect();
+      // $x = [[
+      //   "tablename" => "blog_users_information",
+      //   "whereClause" => [
+      //     "email" => "admin@developerswork.yt",
+      //     "phoneNumber" => "1212121212121"
+      //   ]
+      // ],[
+      //   "tablename" => "blog_users",
+      //   "whereClause" => [
+      //     "username" => "admin"
+      //   ]
+      // ]];
+      // $result = $db->readMultiples($x);
+      // echo json_encode($result);
+      // die();
 
       $auth = new Autheticate($db);
 
@@ -31,7 +46,8 @@ class V1{
           $response = $auth->isLoggedIn();
           break;
         case "/register":
-          // echo "REGISTER PAGE";
+          $auth->register($_POST);
+          $response = $auth->getResponse();
           break;
 
         default:

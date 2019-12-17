@@ -58,6 +58,39 @@ class Database{
         $this->importSQLFile("\TEMPLATE.sql");
     }
 
+    function readMultiples($queries){
+        // SELECT *
+        // FROM blog_users_information info,blog_users_credentials creds,blog_users users
+        // WHERE users.usernam="admin21" or
+        //     info.email="admin@developerswork.yt" or
+        //     info.phoneNumber="121212121212"
+        // group by users.uid
+        // length = 3
+
+        $tablenames = "";
+        $whereClause = "";
+        foreach($queries as $key => $value){
+            $tablenames = $tablenames.$value["tablename"].",";
+            foreach($value["whereClause"] as $whereColumn => $whereValue){
+                $whereClause = $whereClause.$value["tablename"].".".$whereColumn."=";
+                $whereClause = $whereClause."'".$whereValue."' or ";
+            }
+        }
+
+        $tablenames = rtrim($tablenames,",");
+        $whereClause = rtrim($whereClause,"or ");
+        
+        $columnnames = "*";
+
+        $query = "SELECT $columnnames FROM $tablenames WHERE $whereClause;";
+
+        // echo $query;
+        $result = $this->connection->query($query);
+
+        return $this->handleResponse($result);
+
+    }
+
     function readSimple($tablename,$columnnames,$whereColumn,$whereValue){
         // select (columnnames) from tablename where col1=val;
 

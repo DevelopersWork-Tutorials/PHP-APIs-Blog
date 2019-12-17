@@ -20,6 +20,10 @@ class Autheticate{
       if($request["username"] == $_SESSION["username"]){
         if($request["password"] == $_SESSION["password"]){
           $this->status = 1;
+        }else{
+          $this->logout();
+          // $this->status = 400;
+          return $this->login($request);
         }
       }
     }
@@ -91,6 +95,64 @@ class Autheticate{
     return $response;
   }
 
+  function register($request){
+    if(!isset($request["username"]) || !isset($request["password"]) || !isset($request["email"])){
+      $this->status = 400;
+      return $this->setResponse();
+    }
+
+    // $phoneNumber = 0;
+    // if(isset($request["phoneNumber"])){
+    //   $phoneNumber = $request["phoneNumber"];
+    // }
+
+    $query = [[
+        "tablename" => "blog_users_information",
+        "whereClause" => [
+          "email" => $request["email"]
+        ]
+      ],[
+        "tablename" => "blog_users",
+        "whereClause" => [
+          "username" => $request["username"]
+        ]
+    ]];
+
+    $result = $this->db->readMultiples($query);
+    if($result["length"] > 0){
+      $this->status = $result["query_error"];
+      return $this->setResponse();
+    }
+
+    $result = $this->db->insertSimple("blog_users","username","'".$request["username"]."'");
+    if($result["query_error"]){
+      $this->status = $result["query_error"];
+      return $this->setResponse();
+    }
+
+    $result = $this->db->readSimple("blog_users","*","username",$request["username"]);
+    if($result["query_error"]){
+      $this->status = $result["query_error"];
+      return $this->setResponse();
+    }
+
+    $uid = $result[0]["uid"];
+
+    $result = $this->db->insertSimple("blog_users_credentials","uid,password","'$uid','".md5($request["password"])."'");
+    if($result["query_error"]){
+      $this->status = $result["query_error"];
+      return $this->setResponse();
+    }
+
+    $result = $this->db->insertSimple("blog_users_information","uid,email","'$uid','".$request["email"]."'");
+    if($result["query_error"]){
+      $this->status = $result["query_error"];
+      return $this->setResponse();
+    }
+
+    $this->status = 200;
+    return $this->setResponse();
+  }
 
   function setResponse(){
     // echo $this->status;
