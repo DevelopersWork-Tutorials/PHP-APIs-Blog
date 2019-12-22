@@ -14,6 +14,10 @@ class Autheticate{
   function login($request){
     if(!isset($request["username"]) || !isset($request["password"])){
       $this->status = 400;
+      $this->response["data"] = array(
+        "code" => "auth/incorrect-details",
+        "message" => "provided information if not good"
+      );
       return $this->setResponse();
     }
     if(isset($_SESSION["uid"]) && isset($_SESSION["username"])){
@@ -36,6 +40,14 @@ class Autheticate{
 
     if($result["query_error"]){
       $this->status = $result["query_error"];
+      return $this->setResponse();
+    }else if($result["length"] < 1){
+      $this->status = 400;
+      $this->response["data"] = array(
+        "code" => "auth/incorrect-details",
+        "message" => "provided username is incorrect",
+        "error" => "username"
+      );
       return $this->setResponse();
     }
 
@@ -69,6 +81,11 @@ class Autheticate{
 
     }else{
       $this->status = 400;
+      $this->response["data"] = array(
+        "code" => "auth/incorrect-details",
+        "message" => "incorrect password provided",
+        "error" => "password"
+      );
     }
     return $this->setResponse();
   }
@@ -98,18 +115,32 @@ class Autheticate{
   function changePassword($request){
     if(!isset($request["username"]) || !isset($request["password"]) || !isset($request["new_password"])){
       $this->status = 400;
+      $this->response["data"] = array(
+        "code" => "auth/incorrect-details",
+        "message" => "provided information if not good"
+      );
       return $this->setResponse();
     }
 
     // echo $_SESSION["uid"];
     if(!isset($_SESSION["uid"])){
       $this->status = 400;
+      $this->response["data"] = array(
+        "code" => "auth/incorrect-details",
+        "message" => "user not authenticated",
+        "error" => "authentication"
+      );
       return $this->setResponse();
     }
 
     // echo $_SESSION["username"];
     if($_SESSION["username"] != $request["username"]){
       $this->status = 400;
+      $this->response["data"] = array(
+        "code" => "auth/incorrect-details",
+        "message" => "incorrect username provided",
+        "error" => "username"
+      );
       return $this->setResponse();
     }
 
@@ -132,6 +163,11 @@ class Autheticate{
       }
     }else{
       $this->status = 400;
+      $this->response["data"] = array(
+        "code" => "auth/incorrect-details",
+        "message" => "incorrect password provided",
+        "error" => "password"
+      );
       return $this->setResponse();
     }
     $this->status = 200;
@@ -142,6 +178,10 @@ class Autheticate{
   function register($request){
     if(!isset($request["username"]) || !isset($request["password"]) || !isset($request["email"])){
       $this->status = 400;
+      $this->response["data"] = array(
+        "code" => "auth/incorrect-details",
+        "message" => "provided information if not good"
+      );
       return $this->setResponse();
     }
 
@@ -165,6 +205,31 @@ class Autheticate{
     $result = $this->db->readMultiples($query);
     if($result["length"] > 0){
       $this->status = $result["query_error"];
+      $this->response["data"] = array(
+        "code" => "auth/incorrect-details",
+        "message" => "data already exists",
+        "error_list" => array()
+      );
+      // print_r($result);
+      for($i=0;$i<$result["length"];$i++){
+        if($result[$i]["email"] == $request["email"]){
+          $response = array(
+            "code" => "auth/incorrect-details",
+            "message" => "email already exists",
+            "error" => "email"
+          );
+          $this->response["data"]["error_list"]["email"] = $response;
+        }
+        if($result[$i]["username"] == $request["username"]){
+          $response = array(
+            "code" => "auth/incorrect-details",
+            "message" => "username already exists",
+            "error" => "username"
+          );
+          $this->response["data"]["error_list"]["username"] = $response;
+        }
+      }
+
       return $this->setResponse();
     }
 
@@ -204,11 +269,12 @@ class Autheticate{
       $this->response["status"] = 200;
     }else{
       $this->response["status"] = 400;
-      $this->response["data"] = array(
-        "code" => "auth/incorrect-details",
-        "message" => "authetication failed due to incorrect",
-        "error" => ($this->status)
-      );
+      // if(!isset($this->$response))
+      // $this->response["data"] = array(
+      //   "code" => "auth/incorrect-details",
+      //   "message" => "authetication failed due to incorrect",
+      //   "error" => ($this->status)
+      // );
     }
   }
 

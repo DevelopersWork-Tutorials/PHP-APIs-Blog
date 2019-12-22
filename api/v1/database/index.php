@@ -175,8 +175,10 @@ class Database{
         $response = array();
         $response['query_error'] = false;
         if($result){
-            if($result === true)
+            if($result === true){
+                $response["length"] = 0;
                 return $response;
+            }
             $i = 0; 
             while($row = $result->fetch_assoc()){
                 array_push($response,$row);
@@ -184,8 +186,10 @@ class Database{
             }
             $response["length"] = $i;
             // print_r($response);
-        }else
+        }else{
+            $response["length"] = 0;
             $response["query_error"] = $this->connection->error;
+        }
 
         return $response;
     }
