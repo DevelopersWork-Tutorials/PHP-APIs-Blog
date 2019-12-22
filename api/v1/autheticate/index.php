@@ -95,6 +95,50 @@ class Autheticate{
     return $response;
   }
 
+  function changePassword($request){
+    if(!isset($request["username"]) || !isset($request["password"]) || !isset($request["new_password"])){
+      $this->status = 400;
+      return $this->setResponse();
+    }
+
+    // echo $_SESSION["uid"];
+    if(!isset($_SESSION["uid"])){
+      $this->status = 400;
+      return $this->setResponse();
+    }
+
+    // echo $_SESSION["username"];
+    if($_SESSION["username"] != $request["username"]){
+      $this->status = 400;
+      return $this->setResponse();
+    }
+
+    $uid = $_SESSION["uid"];
+
+    // echo $_SESSION["password"];
+    $result = $this->db->readSimple(" blog_users_credentials","*","uid",$uid);
+    if($result["query_error"]){
+      $this->status = $result["query_error"];
+      return $this->setResponse();
+    }
+
+    // echo "<br>";
+    // echo $result[0]["password"]." --- ".md5($request["password"]);
+    if($result[0]["password"] == md5($request["password"])){
+      $result = $this->db->updateSimple(" blog_users_credentials","password",md5($request["new_password"]),"uid",$uid);
+      if($result["query_error"]){
+        $this->status = $result["query_error"];
+        return $this->setResponse();
+      }
+    }else{
+      $this->status = 400;
+      return $this->setResponse();
+    }
+    $this->status = 200;
+    return $this->setResponse();
+
+  }
+
   function register($request){
     if(!isset($request["username"]) || !isset($request["password"]) || !isset($request["email"])){
       $this->status = 400;
@@ -162,7 +206,8 @@ class Autheticate{
       $this->response["status"] = 400;
       $this->response["data"] = array(
         "code" => "auth/incorrect-details",
-        "message" => "authetication failed due to incorrect"
+        "message" => "authetication failed due to incorrect",
+        "error" => ($this->status)
       );
     }
   }

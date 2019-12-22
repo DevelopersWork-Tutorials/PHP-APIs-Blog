@@ -123,7 +123,9 @@ class Database{
         if($this->isConnected == false)
             return false;
 
-        $query = "UDPATE $tablename SET $columnname='$value' WHERE $whereColumn='$whereValue';";
+        $query = "UPDATE $tablename SET $columnname='$value' WHERE $whereColumn='$whereValue';";
+
+        // echo $query;
 
         $result = $this->connection->query($query);
 

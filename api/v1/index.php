@@ -49,7 +49,10 @@ class V1{
           $auth->register($_POST);
           $response = $auth->getResponse();
           break;
-
+        case "/changePassword":
+          $auth->changePassword($_POST);
+          $response = $auth->getResponse();
+          break;
         default:
           // echo "400 BAD REQUEST";
           break;
