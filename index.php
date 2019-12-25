@@ -1,74 +1,23 @@
-<?php
-    $response = array();
-    $connection = new mysqli("localhost","root","","blog");
+<script src="/blog/includes/jquery-3.4.1.min.js"></script>
+<link rel="stylesheet" href="/blog/style.css">
 
-    if($connection->connect_error){
-        $response["error"] = "CONNECTION FAILED";
-        // die();
-    }else{
-        // echo "CONNECTION DONE<br>";
-    }
+<script async src="/blog/script.js"></script>
 
-    $query = "SELECT * FROM blog_users;";
-
-    $result = $connection->query($query);
-
-    if($result){
-        while($row = $result->fetch_assoc()){
-            // print_r($row);
-            $response[$row["uid"]] = $row;
-        }
-    }
-    else{
-        $response["error"] = "QUERY FAILED";
-        // die();
-    }
-
-    echo json_encode($response);
-
-
-    include_once './api/v1/database/index.php';
-
-    $db = new Database();
-
-    $db->setAttributes("localhost","root","","blog");
-
-    if($db->connect()){
-        echo "DONE";
-    }
-
-    $result = $db->readSimple("blog_users","*","1=1");
-
-    if($result){
-        echo "<br>DONE";
-    }
-
-    while($row = $result->fetch_assoc()){
-        print_r($row);
-    }
-
-    $data = "user1";
-
-    $result = $db->insertSimple("blog_users","(username)","('".$data."')");
-
-    if($result){
-        echo "<br>DONE";
-    }
-
-    $result = $db->readSimple("blog_users","*","1=1");
-
-    if($result){
-        echo "<br>DONE";
-    }
-
-    while($row = $result->fetch_assoc()){
-        print_r($row);
-    }
-
-    $result = $db->createTable("blog_users1","username varchar(25),password varchar(25)");
-
-    if($result){
-        echo "<br>DONE";
-    }
+<?php 
+    session_start();
+    $route = str_replace("/blog","",$_SERVER["REQUEST_URI"]);
+    switch($route){
+        case "/":
+            // echo "Home Page";
+            include_once "./components/home/index.php";
+            break;
+        case "/login/":
+          // echo "LOGIN PAGE";
+          include_once "./components/login/index.php";
+          break;
+        default:
+          echo "404 BAD REQUEST";
+          break;
+      }
 
 ?>
