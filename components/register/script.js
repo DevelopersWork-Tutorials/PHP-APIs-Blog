@@ -1,24 +1,26 @@
-function login(){
-  const form = document.forms["loginForm"]
+function register(){
+  const form = document.forms["registerForm"]
 
   const data = {
     username : form["username"].value,
-    password : form["password"].value
+    password : form["password"].value,
+    email : form["email"].value
   }
 
   $.ajax({
-    url : "http://localhost/blog/api/v1/login",
+    url : "http://localhost/blog/api/v1/register",
     type : "POST",
     data : data,
     success : function(response){
+      // console.log(response)
       const data = JSON.parse(response)
-
+      // console.log(data)
       if(data.data.code){
         document.getElementById('response').innerHTML = data.data.message
       }else{
-        document.getElementById('response').innerHTML = "Login Sucessful... You'll be redirected in 5 Seconds"
+        document.getElementById('response').innerHTML = "Signup Sucessful... You'll be redirected in 5 Seconds"
         setTimeout(function(){
-          window.top.location = '/blog/dashboard'
+          window.top.location = '/blog/login'
         },5000);
       }
 

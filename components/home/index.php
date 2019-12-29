@@ -16,5 +16,11 @@
     Welcome to the World of Developers@Work
 
   </h1>
+  <a href="/blog/login">
+    <button>LOGIN</button>
+  </a>
+  <a href="/blog/register">
+    <button>REGISTER</button>
+  </a>
 </body>
 </html>

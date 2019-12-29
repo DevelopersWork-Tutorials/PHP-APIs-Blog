@@ -171,6 +171,9 @@ class Autheticate{
       return $this->setResponse();
     }
     $this->status = 200;
+    $this->response["data"] = array(
+      "uid" => $_SESSION["uid"]
+    );
     return $this->setResponse();
 
   }
@@ -260,6 +263,9 @@ class Autheticate{
     }
 
     $this->status = 200;
+    $this->response["data"] = array(
+      "uid" => $uid
+    );
     return $this->setResponse();
   }
 

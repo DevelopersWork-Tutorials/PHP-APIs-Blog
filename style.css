@@ -1,6 +1,6 @@
 *{
-  margin : 2%;
-  padding: 2%;
+  margin : 0.5%;
+  padding: 0.5%;
   border : 0;
   position: relative;
   max-width: 100%;
@@ -11,6 +11,7 @@
 button{
   background-color: black;
   border-radius: 35%;
+  padding:2%;
   border: 5% solid cyan;
   color : white;
   font-size: medium;
@@ -24,17 +25,17 @@ button:hover{
 
 input{
   width: 100%;
+  padding:2%;
   box-shadow: black 2px 2px 2px 2px;
   background-color: white;
 }
 input:hover{
   box-shadow: black 0px 0px 0px 0px;
   background-color: black;
-  font-size: 125%;
+  font-size: 110%;
   color: white;
 }
 input:focus{
-  max-width: 75%;
   box-shadow: black 0px 0px 0px 0px;
   background-color: black;
   font-size: 125%;
