@@ -16,11 +16,18 @@
     Welcome to the World of Developers@Work
 
   </h1>
-  <a href="/blog/login">
-    <button>LOGIN</button>
-  </a>
-  <a href="/blog/register">
-    <button>REGISTER</button>
-  </a>
+  <?php if(!isset($_SESSION["uid"])){ ?>
+
+    <a href="/blog/login">
+      <button>LOGIN</button>
+    </a>
+    <a href="/blog/register">
+      <button>REGISTER</button>
+    </a>
+  <?php }else{?>
+    <a href="/blog/dashboard">
+      <button>DASHBOARD</button>
+    </a>
+  <?php }?>
 </body>
 </html>

@@ -16,10 +16,10 @@ function login(){
       if(data.data.code){
         document.getElementById('response').innerHTML = data.data.message
       }else{
-        document.getElementById('response').innerHTML = "Login Sucessful... You'll be redirected in 5 Seconds"
+        document.getElementById('response').innerHTML = "Login Successful... You'll be redirected in 3 Seconds"
         setTimeout(function(){
           window.top.location = '/blog/dashboard'
-        },5000);
+        },3000);
       }
 
     },

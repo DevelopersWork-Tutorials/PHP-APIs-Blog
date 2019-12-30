@@ -91,6 +91,17 @@ class Autheticate{
   }
 
   function logout(){
+    if(!isset($_SESSION["uid"])){
+      $this->status = 400;
+      $this->response["data"] = array(
+        "code" => "auth/incorrect-details",
+        "message" => "user not logged in"
+      );
+      unset($_SESSION);
+      session_destroy();
+      return $this->setResponse();
+    }
+
     $this->response["data"] = array(
       "username" => $_SESSION["username"]
     );

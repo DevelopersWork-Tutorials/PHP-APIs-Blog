@@ -18,10 +18,10 @@ function register(){
       if(data.data.code){
         document.getElementById('response').innerHTML = data.data.message
       }else{
-        document.getElementById('response').innerHTML = "Signup Sucessful... You'll be redirected in 5 Seconds"
+        document.getElementById('response').innerHTML = "Signup Successful... You'll be redirected in 3 Seconds"
         setTimeout(function(){
           window.top.location = '/blog/login'
-        },5000);
+        },3000);
       }
 
     },

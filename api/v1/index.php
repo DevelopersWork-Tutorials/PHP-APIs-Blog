@@ -2,6 +2,7 @@
 
 include_once './database/index.php';
 include_once './autheticate/index.php';
+include_once './authorise/index.php';
 session_start();
 // unset($_SESSION);
 class V1{
@@ -12,46 +13,40 @@ class V1{
     function handleRoute($route){
       $db = new Database();
       $db->connect();
-      // $x = [[
-      //   "tablename" => "blog_users_information",
-      //   "whereClause" => [
-      //     "email" => "admin@developerswork.yt",
-      //     "phoneNumber" => "1212121212121"
-      //   ]
-      // ],[
-      //   "tablename" => "blog_users",
-      //   "whereClause" => [
-      //     "username" => "admin"
-      //   ]
-      // ]];
-      // $result = $db->readMultiples($x);
-      // echo json_encode($result);
-      // die();
 
-      $auth = new Autheticate($db);
+      $authenticate = new Autheticate($db);
+      $authorise = new Authorise($db);
 
       $response = array();
       $response["data"] = array();
       switch($route){
         case "/login":
           // echo "LOGIN PAGE";
-          $auth->login($_POST);
-          $response = $auth->getResponse();
+          $authenticate->login($_POST);
+          $response = $authenticate->getResponse();
           break;
         case "/logout":
-          $auth->logout();
-          $response = $auth->getResponse();
+          $authenticate->logout();
+          $response = $authenticate->getResponse();
           break;
         case "/isUserLoggedIn": 
-          $response = $auth->isLoggedIn();
+          $response = $authenticate->isLoggedIn();
           break;
         case "/register":
-          $auth->register($_POST);
-          $response = $auth->getResponse();
+          $authenticate->register($_POST);
+          $response = $authenticate->getResponse();
           break;
         case "/changePassword":
-          $auth->changePassword($_POST);
-          $response = $auth->getResponse();
+          $authenticate->changePassword($_POST);
+          $response = $authenticate->getResponse();
+          break;
+        case "/getClaims":
+          $authorise->getClaims();
+          $response = $authorise->getResponse();
+          break;
+        case "/setClaims":
+          $authorise->getClaims();
+          $response = $authorise->getResponse();
           break;
         default:
           // echo "400 BAD REQUEST";
@@ -75,7 +70,6 @@ class V1{
     }
 
 }
-
 
 $route = str_replace("/blog/api/v1","",$_SERVER["REQUEST_URI"]);
 

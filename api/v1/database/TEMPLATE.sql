@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 08, 2019 at 05:57 PM
+-- Generation Time: Dec 30, 2019 at 05:12 PM
 -- Server version: 10.3.16-MariaDB
 -- PHP Version: 7.3.6
 
@@ -65,6 +65,14 @@ CREATE TABLE `blog_posts` (
   `post_revision_part_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `blog_posts`
+--
+
+INSERT INTO `blog_posts` (`post_id`, `post_part`, `post_content`, `post_revision`, `timestamp`, `post_revision_part_id`) VALUES
+(1, 1, 'This is simple Post', 1, '2019-12-22 16:37:29', 1),
+(1, 1, 'Hello World', 2, '2019-12-30 15:19:24', 3);
+
 -- --------------------------------------------------------
 
 --
@@ -77,6 +85,13 @@ CREATE TABLE `blog_posts_metadata` (
   `post_author_id` bigint(20) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `blog_posts_metadata`
+--
+
+INSERT INTO `blog_posts_metadata` (`post_id`, `post_title`, `post_author_id`, `timestamp`) VALUES
+(1, 'Hello World', 1, '2019-12-17 17:28:58');
 
 -- --------------------------------------------------------
 
@@ -91,6 +106,18 @@ CREATE TABLE `blog_roles` (
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `blog_roles`
+--
+
+INSERT INTO `blog_roles` (`role_id`, `role_name`, `priority`, `timestamp`) VALUES
+(1, 'ADMINISTRATOR', 9999, '2019-12-17 17:29:30'),
+(2, 'MODERATOR', 9998, '2019-12-17 17:29:43'),
+(3, 'USER', 1, '2019-12-22 16:42:20'),
+(4, 'CONTRIBUTOR', 2, '2019-12-22 16:42:56'),
+(5, 'AUTHOR', 3, '2019-12-22 16:42:56'),
+(6, 'EDITOR', 4, '2019-12-22 16:43:05');
+
 -- --------------------------------------------------------
 
 --
@@ -102,6 +129,15 @@ CREATE TABLE `blog_roles_services_map` (
   `role_id` bigint(20) NOT NULL,
   `service_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `blog_roles_services_map`
+--
+
+INSERT INTO `blog_roles_services_map` (`map_id`, `role_id`, `service_id`) VALUES
+(1, 3, 1),
+(3, 4, 13),
+(2, 5, 3);
 
 -- --------------------------------------------------------
 
@@ -117,6 +153,19 @@ CREATE TABLE `blog_roles_services_users_map` (
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `blog_roles_services_users_map`
+--
+
+INSERT INTO `blog_roles_services_users_map` (`map_id`, `role_id`, `service_id`, `user_id`, `timestamp`) VALUES
+(1, 3, NULL, 1, '2019-12-22 16:48:41'),
+(2, 3, NULL, 2, '2019-12-22 16:48:48'),
+(3, 3, NULL, 5, '2019-12-22 16:48:58'),
+(4, NULL, 13, 3, '2019-12-22 16:49:36'),
+(5, 1, NULL, 1, '2019-12-30 15:34:12'),
+(6, NULL, 13, 1, '2019-12-30 15:34:39'),
+(7, NULL, 2, 1, '2019-12-30 16:00:00');
+
 -- --------------------------------------------------------
 
 --
@@ -129,6 +178,25 @@ CREATE TABLE `blog_services` (
   `service_parent` bigint(20) DEFAULT NULL,
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `blog_services`
+--
+
+INSERT INTO `blog_services` (`service_id`, `service_name`, `service_parent`, `timestamp`) VALUES
+(1, 'CHANGE PASSWORD', NULL, '2019-12-17 17:30:08'),
+(2, 'POSTS', NULL, '2019-12-22 16:43:34'),
+(3, 'CREATE', 2, '2019-12-22 16:43:42'),
+(4, 'UPDATE', 2, '2019-12-22 16:43:51'),
+(5, 'DELETE', 2, '2019-12-22 16:43:59'),
+(6, 'READ', 2, '2019-12-22 16:44:16'),
+(7, 'COMMENTS', NULL, '2019-12-22 16:44:41'),
+(8, 'CREATE', 7, '2019-12-22 16:44:46'),
+(9, 'UPDATE', 7, '2019-12-22 16:44:52'),
+(10, 'DELETE', 7, '2019-12-22 16:45:01'),
+(11, 'READ', 7, '2019-12-22 16:45:05'),
+(12, 'APPROVE', 7, '2019-12-22 16:45:11'),
+(13, 'SPAM', 7, '2019-12-22 16:45:16');
 
 -- --------------------------------------------------------
 
@@ -147,7 +215,17 @@ CREATE TABLE `blog_users` (
 --
 
 INSERT INTO `blog_users` (`uid`, `username`, `createdOn`) VALUES
-(1, 'admin', '2019-12-08 16:23:41');
+(1, 'admin', '2019-12-08 16:23:41'),
+(2, 'admin1', '2019-12-16 16:29:51'),
+(3, 'mod', '2019-12-16 16:30:44'),
+(4, 'admin5', '2019-12-17 17:21:08'),
+(5, 'admin6', '2019-12-17 17:21:57'),
+(7, 'admin7', '2019-12-17 17:57:58'),
+(8, 'admin8', '2019-12-29 15:44:14'),
+(9, 'admin9', '2019-12-29 15:50:34'),
+(10, 'admin90', '2019-12-29 15:52:22'),
+(11, 'admin91', '2019-12-29 15:53:11'),
+(12, 'admin92', '2019-12-29 15:53:38');
 
 -- --------------------------------------------------------
 
@@ -165,7 +243,16 @@ CREATE TABLE `blog_users_credentials` (
 --
 
 INSERT INTO `blog_users_credentials` (`uid`, `password`) VALUES
-(1, 'e2fc714c4727ee9395f324cd2e7f331f');
+(1, 'e35cf7b66449df565f93c607d5a81d09'),
+(2, 'e2fc714c4727ee9395f324cd2e7f331f'),
+(3, 'adcaec3805aa912c0d0b14a81bedb6ff'),
+(5, 'adcaec3805aa912c0d0b14a81bedb6ff'),
+(7, 'adcaec3805aa912c0d0b14a81bedb6ff'),
+(8, 'e10adc3949ba59abbe56e057f20f883e'),
+(9, 'e10adc3949ba59abbe56e057f20f883e'),
+(10, 'e10adc3949ba59abbe56e057f20f883e'),
+(11, 'e10adc3949ba59abbe56e057f20f883e'),
+(12, 'e10adc3949ba59abbe56e057f20f883e');
 
 -- --------------------------------------------------------
 
@@ -185,7 +272,16 @@ CREATE TABLE `blog_users_information` (
 --
 
 INSERT INTO `blog_users_information` (`uid`, `email`, `phoneNumber`, `emailVerified`) VALUES
-(1, 'admin@developerswork.yt', NULL, 0);
+(1, 'admin@developerswork.yt', NULL, 0),
+(2, 'admin1@developerswork.yt', 0, 0),
+(3, 'mod@developerswork.yt', 1211214742454, 0),
+(5, 'mod2@developerswork.yt', NULL, 0),
+(7, 'mod3@developerswork.yt', NULL, 0),
+(8, 'admin8@sas.a', NULL, 0),
+(9, 'admin9@sas.a', NULL, 0),
+(10, 'admin90@sas.a', NULL, 0),
+(11, 'admin80@sas.a', NULL, 0),
+(12, 'admin82@sas.a', NULL, 0);
 
 --
 -- Indexes for dumped tables
@@ -285,43 +381,43 @@ ALTER TABLE `blog_comments_metadata`
 -- AUTO_INCREMENT for table `blog_posts`
 --
 ALTER TABLE `blog_posts`
-  MODIFY `post_revision_part_id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `post_revision_part_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `blog_posts_metadata`
 --
 ALTER TABLE `blog_posts_metadata`
-  MODIFY `post_id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `post_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `blog_roles`
 --
 ALTER TABLE `blog_roles`
-  MODIFY `role_id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `role_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `blog_roles_services_map`
 --
 ALTER TABLE `blog_roles_services_map`
-  MODIFY `map_id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `map_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `blog_roles_services_users_map`
 --
 ALTER TABLE `blog_roles_services_users_map`
-  MODIFY `map_id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `map_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `blog_services`
 --
 ALTER TABLE `blog_services`
-  MODIFY `service_id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `service_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `blog_users`
 --
 ALTER TABLE `blog_users`
-  MODIFY `uid` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `uid` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- Constraints for dumped tables
