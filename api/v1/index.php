@@ -44,8 +44,8 @@ class V1{
           $authorise->getClaims();
           $response = $authorise->getResponse();
           break;
-        case "/setClaims":
-          $authorise->getClaims();
+        case "/setRole":
+          $authorise->setRole($_POST);
           $response = $authorise->getResponse();
           break;
         default:

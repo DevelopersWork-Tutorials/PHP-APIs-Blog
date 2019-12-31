@@ -91,13 +91,19 @@ class Database{
 
     }
 
-    function readSimpleOR($tablename,$columnnames,$whereColumn1,$whereValue1,$whereColumn2,$whereValue2){
+    function readSimpleOR($tablename,$columnnames,$whereColumn,$whereValue){
         // select (columnnames) from tablename where col1=val;
 
         if($this->isConnected == false)
             return false;
 
-        $query = "SELECT $columnnames FROM $tablename WHERE $whereColumn1='$whereValue1' OR $whereColumn2='$whereValue2';";
+        $whereClause = "";
+        for($i=0;$i<count($whereColumn);$i++){
+            $whereClause += "".$whereColumn[$i]."='".$whereValue[$i]."' OR ";
+        }
+        $whereClause = rtrim($whereClause,"OR ");
+
+        $query = "SELECT $columnnames FROM $tablename WHERE $whereClause;";
         // echo $query;
         $result = $this->connection->query($query);
 

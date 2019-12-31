@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 30, 2019 at 05:12 PM
+-- Generation Time: Dec 31, 2019 at 05:25 PM
 -- Server version: 10.3.16-MariaDB
 -- PHP Version: 7.3.6
 
@@ -111,12 +111,13 @@ CREATE TABLE `blog_roles` (
 --
 
 INSERT INTO `blog_roles` (`role_id`, `role_name`, `priority`, `timestamp`) VALUES
+(0, 'OWNER', 99999999999, '2019-12-31 15:26:56'),
 (1, 'ADMINISTRATOR', 9999, '2019-12-17 17:29:30'),
 (2, 'MODERATOR', 9998, '2019-12-17 17:29:43'),
 (3, 'USER', 1, '2019-12-22 16:42:20'),
-(4, 'CONTRIBUTOR', 2, '2019-12-22 16:42:56'),
-(5, 'AUTHOR', 3, '2019-12-22 16:42:56'),
-(6, 'EDITOR', 4, '2019-12-22 16:43:05');
+(4, 'CONTRIBUTOR', 10, '2019-12-22 16:42:56'),
+(5, 'AUTHOR', 25, '2019-12-22 16:42:56'),
+(6, 'EDITOR', 50, '2019-12-22 16:43:05');
 
 -- --------------------------------------------------------
 
@@ -150,6 +151,9 @@ CREATE TABLE `blog_roles_services_users_map` (
   `role_id` bigint(20) DEFAULT NULL,
   `service_id` bigint(20) DEFAULT NULL,
   `user_id` bigint(20) NOT NULL,
+  `isOwner` tinyint(1) DEFAULT NULL,
+  `createdBy` bigint(20) NOT NULL,
+  `isActive` tinyint(1) NOT NULL DEFAULT 1,
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -157,14 +161,13 @@ CREATE TABLE `blog_roles_services_users_map` (
 -- Dumping data for table `blog_roles_services_users_map`
 --
 
-INSERT INTO `blog_roles_services_users_map` (`map_id`, `role_id`, `service_id`, `user_id`, `timestamp`) VALUES
-(1, 3, NULL, 1, '2019-12-22 16:48:41'),
-(2, 3, NULL, 2, '2019-12-22 16:48:48'),
-(3, 3, NULL, 5, '2019-12-22 16:48:58'),
-(4, NULL, 13, 3, '2019-12-22 16:49:36'),
-(5, 1, NULL, 1, '2019-12-30 15:34:12'),
-(6, NULL, 13, 1, '2019-12-30 15:34:39'),
-(7, NULL, 2, 1, '2019-12-30 16:00:00');
+INSERT INTO `blog_roles_services_users_map` (`map_id`, `role_id`, `service_id`, `user_id`, `isOwner`, `createdBy`, `isActive`, `timestamp`) VALUES
+(1, 0, NULL, 1, 1, 1, 1, '2019-12-31 15:59:19'),
+(2, 1, NULL, 1, NULL, 1, 1, '2019-12-31 15:59:58'),
+(3, 5, NULL, 2, NULL, 1, 1, '2019-12-31 16:19:18'),
+(4, 2, NULL, 2, NULL, 1, 1, '2019-12-31 16:21:54'),
+(6, 2, NULL, 4, NULL, 1, 0, '2019-12-31 16:23:12'),
+(8, 2, NULL, 4, NULL, 1, 1, '2019-12-31 16:24:45');
 
 -- --------------------------------------------------------
 
@@ -196,7 +199,11 @@ INSERT INTO `blog_services` (`service_id`, `service_name`, `service_parent`, `ti
 (10, 'DELETE', 7, '2019-12-22 16:45:01'),
 (11, 'READ', 7, '2019-12-22 16:45:05'),
 (12, 'APPROVE', 7, '2019-12-22 16:45:11'),
-(13, 'SPAM', 7, '2019-12-22 16:45:16');
+(13, 'SPAM', 7, '2019-12-22 16:45:16'),
+(14, 'ROLES', NULL, '2019-12-31 15:24:02'),
+(15, 'CREATE', 14, '2019-12-31 15:24:31'),
+(16, 'UPDATE', 14, '2019-12-31 15:24:31'),
+(17, 'ASSIGN', 14, '2019-12-31 15:24:43');
 
 -- --------------------------------------------------------
 
@@ -320,7 +327,8 @@ ALTER TABLE `blog_posts_metadata`
 -- Indexes for table `blog_roles`
 --
 ALTER TABLE `blog_roles`
-  ADD PRIMARY KEY (`role_id`);
+  ADD PRIMARY KEY (`role_id`),
+  ADD UNIQUE KEY `role_name` (`role_name`);
 
 --
 -- Indexes for table `blog_roles_services_map`
@@ -335,9 +343,11 @@ ALTER TABLE `blog_roles_services_map`
 --
 ALTER TABLE `blog_roles_services_users_map`
   ADD PRIMARY KEY (`map_id`),
-  ADD UNIQUE KEY `role_service_map_id` (`role_id`,`user_id`),
-  ADD UNIQUE KEY `service_id` (`service_id`,`user_id`),
-  ADD KEY `roles_services_users map user_id` (`user_id`);
+  ADD UNIQUE KEY `isOwner` (`isOwner`),
+  ADD UNIQUE KEY `role_service_map_id` (`role_id`,`user_id`,`isActive`) USING BTREE,
+  ADD UNIQUE KEY `service_id` (`service_id`,`user_id`,`isActive`) USING BTREE,
+  ADD KEY `roles_services_users map uid` (`user_id`),
+  ADD KEY `roles_services_users map createdBy` (`createdBy`);
 
 --
 -- Indexes for table `blog_services`
@@ -393,7 +403,7 @@ ALTER TABLE `blog_posts_metadata`
 -- AUTO_INCREMENT for table `blog_roles`
 --
 ALTER TABLE `blog_roles`
-  MODIFY `role_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `role_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `blog_roles_services_map`
@@ -405,13 +415,13 @@ ALTER TABLE `blog_roles_services_map`
 -- AUTO_INCREMENT for table `blog_roles_services_users_map`
 --
 ALTER TABLE `blog_roles_services_users_map`
-  MODIFY `map_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `map_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `blog_services`
 --
 ALTER TABLE `blog_services`
-  MODIFY `service_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `service_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `blog_users`
@@ -459,9 +469,10 @@ ALTER TABLE `blog_roles_services_map`
 -- Constraints for table `blog_roles_services_users_map`
 --
 ALTER TABLE `blog_roles_services_users_map`
+  ADD CONSTRAINT `roles_services_users map createdBy` FOREIGN KEY (`createdBy`) REFERENCES `blog_users` (`uid`),
   ADD CONSTRAINT `roles_services_users map role_id` FOREIGN KEY (`role_id`) REFERENCES `blog_roles` (`role_id`),
   ADD CONSTRAINT `roles_services_users map service_id` FOREIGN KEY (`service_id`) REFERENCES `blog_services` (`service_id`),
-  ADD CONSTRAINT `roles_services_users map user_id` FOREIGN KEY (`user_id`) REFERENCES `blog_users` (`uid`);
+  ADD CONSTRAINT `roles_services_users map uid` FOREIGN KEY (`user_id`) REFERENCES `blog_users` (`uid`);
 
 --
 -- Constraints for table `blog_services`

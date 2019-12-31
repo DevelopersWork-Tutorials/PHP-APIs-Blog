@@ -46,7 +46,7 @@ class Authorise{
     }
     $data = array();
     foreach($services as $key => $value){
-      $result = $this->db->readSimpleOR("blog_services","service_id,service_name,service_parent","service_id",$key,"service_parent",$key);
+      $result = $this->db->readSimpleOR("blog_services","service_id,service_name,service_parent",array("service_id","service_parent"),array($key,$key));
       if($result["query_error"]){
         echo $result["query_error"];
         // $this->status = $result["query_error"];
@@ -58,6 +58,71 @@ class Authorise{
     }
 
     $this->response["data"] = $data;
+    return $this->setResponse();
+  }
+
+  function setRole($request){
+    if(!isset($_SESSION["uid"])){
+      $this->status = 400;
+      $this->response["data"] = array(
+        "code" => "auth/incorrect-details",
+        "message" => "user not logged in"
+      );
+      return $this->setResponse();
+    }
+
+    if(!isset($request["username"]) || !isset($request["role"])){
+      $this->status = 400;
+      $this->response["data"] = array(
+        "code" => "auth/incorrect-details",
+        "message" => "provided information is not good"
+      );
+      return $this->setResponse();
+    }
+
+    $result = $this->db->readSimple("blog_users","*","username",$request["username"]);
+
+    if($result["query_error"]){
+      $this->status = $result["query_error"];
+      return $this->setResponse();
+    }else if($result["length"] < 1){
+      $this->status = 400;
+      $this->response["data"] = array(
+        "code" => "auth/incorrect-details",
+        "message" => "provided username is incorrect",
+        "error" => "username"
+      );
+      return $this->setResponse();
+    }
+    $uid = $result[0]["uid"];
+
+    $result = $this->db->readSimple("blog_roles","*","role_name",$request["role"]);
+
+    if($result["query_error"]){
+      $this->status = $result["query_error"];
+      return $this->setResponse();
+    }else if($result["length"] < 1){
+      $this->status = 400;
+      $this->response["data"] = array(
+        "code" => "auth/incorrect-details",
+        "message" => "provided role is incorrect",
+        "error" => "role"
+      );
+      return $this->setResponse();
+    }
+    $role_id = $result[0]["role_id"];
+
+    $result = $this->db->insertSimple("blog_roles_services_users_map","role_id,user_id,createdBy","'$role_id','".$uid."','".$_SESSION["uid"]."'");                                      
+    if($result["query_error"]){
+      $this->status = $result["query_error"];
+      return $this->setResponse();
+    }
+
+    $this->response["data"] = array(
+      "username" => $request["username"],
+      "role" => $request["role"]
+    );
+
     return $this->setResponse();
   }
 
