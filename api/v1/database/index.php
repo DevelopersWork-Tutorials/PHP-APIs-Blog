@@ -136,6 +136,25 @@ class Database{
         return $this->handleResponse($result);
     }
 
+    function insertMultipleSets($tablename,$columnnames,$valuesArray){
+        // insert into tablename(columenames) values (values1),(values2),(values3)...;
+        if($this->isConnected == false)
+            return false;
+        
+        $values = "";
+        foreach($valuesArray as $keys => $value){
+            $values .= "($value),";
+        }
+        $values = rtrim($values,",");
+
+        $query = "INSERT INTO $tablename ($columnnames) VALUES $values;";
+
+        $result = $this->connection->query($query);
+
+        return $this->handleResponse($result);
+    }
+
+
     function updateSimple($tablename,$columnname,$value,$whereColumn,$whereValue){
         // update tablename set columnname=value where ....
 

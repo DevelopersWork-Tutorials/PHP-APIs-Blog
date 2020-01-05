@@ -48,6 +48,10 @@ class V1{
           $authorise->setRole($_POST);
           $response = $authorise->getResponse();
           break;
+        case "/setServices":
+          $authorise->setServices($_POST);
+          $response = $authorise->getResponse();
+          break;
         default:
           // echo "400 BAD REQUEST";
           break;
@@ -55,7 +59,8 @@ class V1{
 
       $response["request"] = array(
         "SERVER_NAME" => $_SERVER["SERVER_NAME"],
-        "REQUEST_URL" => $_SERVER["REQUEST_URI"]
+        "REQUEST_URL" => $_SERVER["REQUEST_URI"],
+        "REQUEST_BODY" => $_REQUEST
       );
 
       $response["developer"] = array(
@@ -68,7 +73,6 @@ class V1{
 
       echo json_encode($response);
     }
-
 }
 
 $route = str_replace("/blog/api/v1","",$_SERVER["REQUEST_URI"]);

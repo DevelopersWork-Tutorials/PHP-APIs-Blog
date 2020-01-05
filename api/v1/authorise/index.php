@@ -126,6 +126,78 @@ class Authorise{
     return $this->setResponse();
   }
 
+  function setServices($request){
+    if(!isset($_SESSION["uid"])){
+      $this->status = 400;
+      $this->response["data"] = array(
+        "code" => "auth/incorrect-details",
+        "message" => "user not logged in"
+      );
+      return $this->setResponse();
+    }
+
+    if(!isset($request["username"]) || !isset($request["services"]) || !is_array($request["services"])){
+      $this->status = 400;
+      $this->response["data"] = array(
+        "code" => "auth/incorrect-details",
+        "message" => "provided information is not good"
+      );
+      return $this->setResponse();
+    }
+
+    $result = $this->db->readSimple("blog_users","*","username",$request["username"]);
+
+    if($result["query_error"]){
+      $this->status = $result["query_error"];
+      return $this->setResponse();
+    }else if($result["length"] < 1){
+      $this->status = 400;
+      $this->response["data"] = array(
+        "code" => "auth/incorrect-details",
+        "message" => "provided username is incorrect",
+        "error" => "username"
+      );
+      return $this->setResponse();
+    }
+    $uid = $result[0]["uid"];
+
+    // Start here
+    $values = array();
+    for($i=0;$i<count($request["services"]);$i++){
+      $result = $this->db->readSimple("blog_services","*","service_id",$request["services"][$i]);
+
+      if($result["query_error"]){
+        $this->status = $result["query_error"];
+        return $this->setResponse();
+      }else if($result["length"] < 1){
+        $this->status = 400;
+        $this->response["data"] = array(
+          "code" => "auth/incorrect-details",
+          "message" => "provided services doesn't exists",
+          "error" => "services"
+        );
+        return $this->setResponse();
+      }
+
+      // (service_id,users_id,created_by)
+      $values["".$i] = "'".$request["services"][$i]."','$uid','".$_SESSION["uid"]."'";
+    }
+
+    $result = $this->db->insertMultipleSets("blog_roles_services_users_map","service_id,user_id,createdby",$values);
+    if($result["query_error"]){
+      print_r($result);
+      $this->status = $result["query_error"];
+      return $this->setResponse();
+    }
+
+    $this->response["data"] = array(
+      "username" => $request["username"],
+      "services" => $request["services"]
+    );
+
+    return $this->setResponse();
+  }
+
   function setResponse(){
     // echo $this->status;
     if($this->status == 200){
