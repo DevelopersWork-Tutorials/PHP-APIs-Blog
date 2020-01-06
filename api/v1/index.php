@@ -23,6 +23,7 @@ class V1{
         case "/login":
           // echo "LOGIN PAGE";
           $authenticate->login($_POST);
+          $authorise->getPriority();
           $response = $authenticate->getResponse();
           break;
         case "/logout":
@@ -50,6 +51,10 @@ class V1{
           break;
         case "/setServices":
           $authorise->setServices($_POST);
+          $response = $authorise->getResponse();
+          break;
+        case "/createRole":
+          $authorise->createRole($_POST);
           $response = $authorise->getResponse();
           break;
         default:

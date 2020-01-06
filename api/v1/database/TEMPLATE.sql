@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 31, 2019 at 05:25 PM
+-- Generation Time: Jan 06, 2020 at 05:30 PM
 -- Server version: 10.3.16-MariaDB
 -- PHP Version: 7.3.6
 
@@ -117,7 +117,8 @@ INSERT INTO `blog_roles` (`role_id`, `role_name`, `priority`, `timestamp`) VALUE
 (3, 'USER', 1, '2019-12-22 16:42:20'),
 (4, 'CONTRIBUTOR', 10, '2019-12-22 16:42:56'),
 (5, 'AUTHOR', 25, '2019-12-22 16:42:56'),
-(6, 'EDITOR', 50, '2019-12-22 16:43:05');
+(6, 'EDITOR', 50, '2019-12-22 16:43:05'),
+(8, 'comment_mod', 25, '2020-01-06 16:28:49');
 
 -- --------------------------------------------------------
 
@@ -138,7 +139,9 @@ CREATE TABLE `blog_roles_services_map` (
 INSERT INTO `blog_roles_services_map` (`map_id`, `role_id`, `service_id`) VALUES
 (1, 3, 1),
 (3, 4, 13),
-(2, 5, 3);
+(2, 5, 3),
+(4, 8, 3),
+(5, 8, 4);
 
 -- --------------------------------------------------------
 
@@ -167,7 +170,11 @@ INSERT INTO `blog_roles_services_users_map` (`map_id`, `role_id`, `service_id`, 
 (3, 5, NULL, 2, NULL, 1, 1, '2019-12-31 16:19:18'),
 (4, 2, NULL, 2, NULL, 1, 1, '2019-12-31 16:21:54'),
 (6, 2, NULL, 4, NULL, 1, 0, '2019-12-31 16:23:12'),
-(8, 2, NULL, 4, NULL, 1, 1, '2019-12-31 16:24:45');
+(8, 2, NULL, 4, NULL, 1, 1, '2019-12-31 16:24:45'),
+(9, NULL, 3, 4, NULL, 1, 0, '2020-01-05 16:38:25'),
+(10, NULL, 4, 4, NULL, 1, 0, '2020-01-05 16:38:25'),
+(15, NULL, 3, 4, NULL, 1, 1, '2020-01-05 16:40:08'),
+(16, NULL, 4, 4, NULL, 1, 1, '2020-01-05 16:40:08');
 
 -- --------------------------------------------------------
 
@@ -403,19 +410,19 @@ ALTER TABLE `blog_posts_metadata`
 -- AUTO_INCREMENT for table `blog_roles`
 --
 ALTER TABLE `blog_roles`
-  MODIFY `role_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `role_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `blog_roles_services_map`
 --
 ALTER TABLE `blog_roles_services_map`
-  MODIFY `map_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `map_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `blog_roles_services_users_map`
 --
 ALTER TABLE `blog_roles_services_users_map`
-  MODIFY `map_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `map_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `blog_services`

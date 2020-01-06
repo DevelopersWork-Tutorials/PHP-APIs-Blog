@@ -146,7 +146,6 @@ class Authorise{
     }
 
     $result = $this->db->readSimple("blog_users","*","username",$request["username"]);
-
     if($result["query_error"]){
       $this->status = $result["query_error"];
       return $this->setResponse();
@@ -192,6 +191,98 @@ class Authorise{
 
     $this->response["data"] = array(
       "username" => $request["username"],
+      "services" => $request["services"]
+    );
+
+    return $this->setResponse();
+  }
+
+  function getPriority(){
+    if(!isset($_SESSION["uid"])){
+      $this->status = 400;
+      $this->response["data"] = array(
+        "code" => "auth/incorrect-details",
+        "message" => "user not logged in"
+      );
+      return $this->setResponse();
+    }
+
+    $result = $this->db->readSimple("blog_roles_services_users_map","role_id","user_id",$_SESSION["uid"]);
+    if($result["query_error"]){
+      $this->status = $result["query_error"];
+      return $this->setResponse();
+    }
+
+    $priority = 0;
+    for($i=0;$i<$result["length"];$i++){
+      $resultSub = $this->db->readSimple("blog_roles","priority","role_id",$result[$i]["role_id"]);
+      if($resultSub["query_error"]){
+        // $this->status = $result["query_error"];
+        // return $this->setResponse();
+        continue;
+      }
+      if($resultSub["length"] > 0)
+      if($resultSub[0]["priority"] > $priority){
+        $priority = $resultSub[0]["priority"];
+      }
+    }
+
+    $_SESSION["priority"] = $priority;
+  }
+
+  function createRole($request){
+    $id = "";
+    if(!isset($_SESSION["uid"])){
+      $this->status = 400;
+      $this->response["data"] = array(
+        "code" => "auth/incorrect-details",
+        "message" => "user not logged in"
+      );
+      return $this->setResponse();
+    }
+
+    if(!isset($request["role_name"]) || !isset($request["role_priority"]) || !isset($request["services"]) || !is_array($request["services"])){
+      $this->status = 400;
+      $this->response["data"] = array(
+        "code" => "auth/incorrect-details",
+        "message" => "provided information is not good"
+      );
+      return $this->setResponse();
+    }
+
+    $result = $this->db->readSimple("blog_roles","1","role_name",$request["role_name"]);
+    if($result["query_error"]){
+      $this->status = $result["query_error"];
+      return $this->setResponse();
+    }else if($result["length"] > 0){
+      $this->status = 400;
+      $this->response["data"] = array(
+        "code" => "auth/role-exists",
+        "message" => "Role already Exists"
+      );
+      return $this->setResponse();
+    }
+
+    $result = $this->db->insertSimple("blog_roles","role_name,priority","'".$request["role_name"]."','".$request["role_priority"]."'");
+    if($result["query_error"]){
+      $this->status = $result["query_error"];
+      return $this->setResponse();
+    }
+    $result = $this->db->readSimple("blog_roles","role_id","role_name",$request["role_name"]);
+    $id = $result[0]["role_id"];
+
+    for($i=0;$i<count($request["services"]);$i++){
+      $result = $this->db->insertSimple("blog_roles_services_map","role_id,service_id","'$id','".$request["services"][$i]."'");
+      if($result["query_error"]){
+        // $this->status = $result["query_error"];
+        // return $this->setResponse();
+        continue;
+      }
+    }
+
+    $this->response["data"] = array(
+      "id" => $id,
+      "role" => $request["role_name"],
       "services" => $request["services"]
     );
 
