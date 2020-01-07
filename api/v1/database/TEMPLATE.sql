@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 06, 2020 at 05:30 PM
+-- Generation Time: Jan 07, 2020 at 05:43 PM
 -- Server version: 10.3.16-MariaDB
 -- PHP Version: 7.3.6
 
@@ -156,7 +156,7 @@ CREATE TABLE `blog_roles_services_users_map` (
   `user_id` bigint(20) NOT NULL,
   `isOwner` tinyint(1) DEFAULT NULL,
   `createdBy` bigint(20) NOT NULL,
-  `isActive` tinyint(1) NOT NULL DEFAULT 1,
+  `isActive` tinyint(1) DEFAULT 1,
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -173,8 +173,8 @@ INSERT INTO `blog_roles_services_users_map` (`map_id`, `role_id`, `service_id`, 
 (8, 2, NULL, 4, NULL, 1, 1, '2019-12-31 16:24:45'),
 (9, NULL, 3, 4, NULL, 1, 0, '2020-01-05 16:38:25'),
 (10, NULL, 4, 4, NULL, 1, 0, '2020-01-05 16:38:25'),
-(15, NULL, 3, 4, NULL, 1, 1, '2020-01-05 16:40:08'),
-(16, NULL, 4, 4, NULL, 1, 1, '2020-01-05 16:40:08');
+(15, NULL, 3, 4, NULL, 1, NULL, '2020-01-05 16:40:08'),
+(16, NULL, 4, 4, NULL, 1, NULL, '2020-01-05 16:40:08');
 
 -- --------------------------------------------------------
 

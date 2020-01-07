@@ -57,6 +57,10 @@ class V1{
           $authorise->createRole($_POST);
           $response = $authorise->getResponse();
           break;
+        case "/unsetClaim":
+          $authorise->unsetClaim($_POST);
+          $response = $authorise->getResponse();
+          break;
         default:
           // echo "400 BAD REQUEST";
           break;

@@ -99,7 +99,7 @@ class Database{
 
         $whereClause = "";
         for($i=0;$i<count($whereColumn);$i++){
-            $whereClause += "".$whereColumn[$i]."='".$whereValue[$i]."' OR ";
+            $whereClause .= "".$whereColumn[$i]."='".$whereValue[$i]."' OR ";
         }
         $whereClause = rtrim($whereClause,"OR ");
 
@@ -154,6 +154,59 @@ class Database{
         return $this->handleResponse($result);
     }
 
+    function updateSimpleAND($tablename,$columnname,$value,$whereColumn,$whereValue){
+        // update tablename set columnname=value where col1=val1 and col2=vasl2 and....
+
+        if($this->isConnected == false)
+            return false;
+        if(!is_array($whereColumn) || !is_array($whereValue)){
+            $result = array(
+                "query_error" => "ARRAYS REQUIRED HERE",
+                "length" => 0
+            );
+            return $result;
+        }
+        // print_r($whereColumn);
+        // print_r($whereValue);
+        $whereClause = "";
+        for($i=0;$i<count($whereColumn);$i++){
+            $whereClause .= "".$whereColumn[$i]."='".$whereValue[$i]."' AND ";
+        }
+        $whereClause = rtrim($whereClause,"AND ");
+
+        $query = "UPDATE $tablename SET $columnname='$value' WHERE $whereClause;";
+        // echo $query;
+        $result = $this->connection->query($query);
+
+        return $this->handleResponse($result);
+    }
+
+    function updateSimpleANDUnset($tablename,$columnname,$whereColumn,$whereValue){
+        // update tablename set columnname=value where col1=val1 and col2=vasl2 and....
+
+        if($this->isConnected == false)
+            return false;
+        if(!is_array($whereColumn) || !is_array($whereValue)){
+            $result = array(
+                "query_error" => "ARRAYS REQUIRED HERE",
+                "length" => 0
+            );
+            return $result;
+        }
+        // print_r($whereColumn);
+        // print_r($whereValue);
+        $whereClause = "";
+        for($i=0;$i<count($whereColumn);$i++){
+            $whereClause .= "".$whereColumn[$i]."='".$whereValue[$i]."' AND ";
+        }
+        $whereClause = rtrim($whereClause,"AND ");
+
+        $query = "UPDATE $tablename SET $columnname=NULL WHERE $whereClause;";
+        // echo $query;
+        $result = $this->connection->query($query);
+
+        return $this->handleResponse($result);
+    }
 
     function updateSimple($tablename,$columnname,$value,$whereColumn,$whereValue){
         // update tablename set columnname=value where ....

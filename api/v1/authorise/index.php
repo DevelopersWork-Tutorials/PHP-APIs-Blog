@@ -289,6 +289,55 @@ class Authorise{
     return $this->setResponse();
   }
 
+  function unsetClaim($request){
+
+    if(!isset($_SESSION["uid"])){
+      $this->status = 400;
+      $this->response["data"] = array(
+        "code" => "auth/incorrect-details",
+        "message" => "user not logged in"
+      );
+      return $this->setResponse();
+    }
+
+    if(!isset($request["username"]) || !isset($request["type"]) || !isset($request["id"]) || ($request["type"] != "service_id" && $request["type"] != "role_id")) {
+      $this->status = 400;
+      $this->response["data"] = array(
+        "code" => "auth/incorrect-details",
+        "message" => "provided information is not good"
+      );
+      return $this->setResponse();
+    }
+    $result = $this->db->readSimple("blog_users","uid","username",$request["username"]);
+
+    if($result["query_error"]){
+      $this->status = $result["query_error"];
+      return $this->setResponse();
+    }else if($result["length"] < 1){
+      $this->status = 400;
+      $this->response["data"] = array(
+        "code" => "auth/incorrect-details",
+        "message" => "provided username is incorrect",
+        "error" => "username"
+      );
+      return $this->setResponse();
+    }
+    $uid = $result[0]["uid"];
+    // Code here
+    $result = $this->db->updateSimpleANDUnset("blog_roles_services_users_map","isActive",array("user_id",$request["type"],"isActive"),array("$uid",$request["id"],"1"));
+    if($result["query_error"]){
+      echo $result["query_error"];
+      $this->status = $result["query_error"];
+      return $this->setResponse();
+    }
+
+    $this->response["data"] = array(
+      "unset" => true
+    );
+
+    return $this->setResponse();
+  }
+
   function setResponse(){
     // echo $this->status;
     if($this->status == 200){
