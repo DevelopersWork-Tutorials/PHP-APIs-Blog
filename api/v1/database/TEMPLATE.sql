@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 07, 2020 at 05:43 PM
+-- Generation Time: Jan 12, 2020 at 05:37 PM
 -- Server version: 10.3.16-MariaDB
 -- PHP Version: 7.3.6
 
@@ -58,20 +58,40 @@ CREATE TABLE `blog_comments_metadata` (
 
 CREATE TABLE `blog_posts` (
   `post_id` bigint(20) NOT NULL,
-  `post_part` bigint(20) NOT NULL,
-  `post_content` varchar(10000) NOT NULL,
-  `post_revision` bigint(20) NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
-  `post_revision_part_id` bigint(20) NOT NULL
+  `post_title` varchar(512) NOT NULL,
+  `post_author_id` bigint(20) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `blog_posts`
 --
 
-INSERT INTO `blog_posts` (`post_id`, `post_part`, `post_content`, `post_revision`, `timestamp`, `post_revision_part_id`) VALUES
-(1, 1, 'This is simple Post', 1, '2019-12-22 16:37:29', 1),
-(1, 1, 'Hello World', 2, '2019-12-30 15:19:24', 3);
+INSERT INTO `blog_posts` (`post_id`, `post_title`, `post_author_id`, `timestamp`) VALUES
+(2, 'Hello World', 1, '2020-01-12 16:27:30');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `blog_posts_content`
+--
+
+CREATE TABLE `blog_posts_content` (
+  `map_id` bigint(20) NOT NULL,
+  `post_id` bigint(20) NOT NULL,
+  `post_part` bigint(20) NOT NULL,
+  `post_content` varchar(10000) NOT NULL,
+  `post_revision` bigint(20) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `blog_posts_content`
+--
+
+INSERT INTO `blog_posts_content` (`map_id`, `post_id`, `post_part`, `post_content`, `post_revision`, `timestamp`) VALUES
+(1, 2, 1, '<h1>Hello World</h1>, Content-1 and paragraph continues...<hr/>', 0, '2020-01-12 16:29:17'),
+(2, 2, 2, 'Hello World, Content-2 and paragraph ends here<br/>', 0, '2020-01-12 16:29:17');
 
 -- --------------------------------------------------------
 
@@ -80,9 +100,11 @@ INSERT INTO `blog_posts` (`post_id`, `post_part`, `post_content`, `post_revision
 --
 
 CREATE TABLE `blog_posts_metadata` (
+  `map_id` bigint(20) NOT NULL,
   `post_id` bigint(20) NOT NULL,
-  `post_title` varchar(512) NOT NULL,
-  `post_author_id` bigint(20) NOT NULL,
+  `category` varchar(512) NOT NULL,
+  `revision_id` bigint(20) NOT NULL,
+  `lastUpdated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -90,8 +112,8 @@ CREATE TABLE `blog_posts_metadata` (
 -- Dumping data for table `blog_posts_metadata`
 --
 
-INSERT INTO `blog_posts_metadata` (`post_id`, `post_title`, `post_author_id`, `timestamp`) VALUES
-(1, 'Hello World', 1, '2019-12-17 17:28:58');
+INSERT INTO `blog_posts_metadata` (`map_id`, `post_id`, `category`, `revision_id`, `lastUpdated`, `timestamp`) VALUES
+(1, 2, 'Sample', 0, '2020-01-12 16:30:06', '2020-01-12 16:30:06');
 
 -- --------------------------------------------------------
 
@@ -319,16 +341,23 @@ ALTER TABLE `blog_comments_metadata`
 -- Indexes for table `blog_posts`
 --
 ALTER TABLE `blog_posts`
-  ADD PRIMARY KEY (`post_revision_part_id`),
+  ADD PRIMARY KEY (`post_id`),
+  ADD UNIQUE KEY `post_title` (`post_title`,`post_author_id`),
+  ADD KEY `post_metadata map user_id` (`post_author_id`);
+
+--
+-- Indexes for table `blog_posts_content`
+--
+ALTER TABLE `blog_posts_content`
+  ADD PRIMARY KEY (`map_id`),
   ADD UNIQUE KEY `post_id` (`post_id`,`post_part`,`post_revision`);
 
 --
 -- Indexes for table `blog_posts_metadata`
 --
 ALTER TABLE `blog_posts_metadata`
-  ADD PRIMARY KEY (`post_id`),
-  ADD UNIQUE KEY `post_title` (`post_title`,`post_author_id`),
-  ADD KEY `post_metadata map user_id` (`post_author_id`);
+  ADD PRIMARY KEY (`map_id`),
+  ADD UNIQUE KEY `post_id` (`post_id`,`revision_id`);
 
 --
 -- Indexes for table `blog_roles`
@@ -398,13 +427,19 @@ ALTER TABLE `blog_comments_metadata`
 -- AUTO_INCREMENT for table `blog_posts`
 --
 ALTER TABLE `blog_posts`
-  MODIFY `post_revision_part_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `post_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `blog_posts_content`
+--
+ALTER TABLE `blog_posts_content`
+  MODIFY `map_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `blog_posts_metadata`
 --
 ALTER TABLE `blog_posts_metadata`
-  MODIFY `post_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `map_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `blog_roles`
@@ -450,20 +485,26 @@ ALTER TABLE `blog_comments`
 -- Constraints for table `blog_comments_metadata`
 --
 ALTER TABLE `blog_comments_metadata`
-  ADD CONSTRAINT `blog_comments_metadata map post_id` FOREIGN KEY (`post_id`) REFERENCES `blog_posts_metadata` (`post_id`),
+  ADD CONSTRAINT `blog_comments_metadata map post_id` FOREIGN KEY (`post_id`) REFERENCES `blog_posts` (`post_id`),
   ADD CONSTRAINT `blog_comments_metadata map user_id` FOREIGN KEY (`comment_author`) REFERENCES `blog_users` (`uid`);
 
 --
 -- Constraints for table `blog_posts`
 --
 ALTER TABLE `blog_posts`
-  ADD CONSTRAINT `posts map post_id` FOREIGN KEY (`post_id`) REFERENCES `blog_posts_metadata` (`post_id`);
+  ADD CONSTRAINT `post_metadata map user_id` FOREIGN KEY (`post_author_id`) REFERENCES `blog_users` (`uid`);
+
+--
+-- Constraints for table `blog_posts_content`
+--
+ALTER TABLE `blog_posts_content`
+  ADD CONSTRAINT `posts map post_id` FOREIGN KEY (`post_id`) REFERENCES `blog_posts` (`post_id`);
 
 --
 -- Constraints for table `blog_posts_metadata`
 --
 ALTER TABLE `blog_posts_metadata`
-  ADD CONSTRAINT `post_metadata map user_id` FOREIGN KEY (`post_author_id`) REFERENCES `blog_users` (`uid`);
+  ADD CONSTRAINT `posts_metadata map post_id` FOREIGN KEY (`post_id`) REFERENCES `blog_posts` (`post_id`);
 
 --
 -- Constraints for table `blog_roles_services_map`
