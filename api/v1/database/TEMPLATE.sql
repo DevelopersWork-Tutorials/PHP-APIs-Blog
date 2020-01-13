@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 12, 2020 at 05:37 PM
+-- Generation Time: Jan 13, 2020 at 07:01 PM
 -- Server version: 10.3.16-MariaDB
 -- PHP Version: 7.3.6
 
@@ -68,7 +68,10 @@ CREATE TABLE `blog_posts` (
 --
 
 INSERT INTO `blog_posts` (`post_id`, `post_title`, `post_author_id`, `timestamp`) VALUES
-(2, 'Hello World', 1, '2020-01-12 16:27:30');
+(2, 'Hello World', 1, '2020-01-12 16:27:30'),
+(3, 'Hello World2', 2, '2020-01-13 17:31:19'),
+(4, 'HEllo World3', 4, '2020-01-13 17:31:31'),
+(5, 'Hello World 4', 12, '2020-01-13 17:31:43');
 
 -- --------------------------------------------------------
 
@@ -91,7 +94,9 @@ CREATE TABLE `blog_posts_content` (
 
 INSERT INTO `blog_posts_content` (`map_id`, `post_id`, `post_part`, `post_content`, `post_revision`, `timestamp`) VALUES
 (1, 2, 1, '<h1>Hello World</h1>, Content-1 and paragraph continues...<hr/>', 0, '2020-01-12 16:29:17'),
-(2, 2, 2, 'Hello World, Content-2 and paragraph ends here<br/>', 0, '2020-01-12 16:29:17');
+(2, 2, 2, 'Hello World, Content-2 and paragraph ends here<br/>', 0, '2020-01-12 16:29:17'),
+(5, 3, 1, '<h2>Title</h2><p>Some Text</p>', 0, '2020-01-13 17:35:53'),
+(6, 3, 1, '<h1>title2</h1>', 1, '2020-01-13 17:36:16');
 
 -- --------------------------------------------------------
 
@@ -104,6 +109,7 @@ CREATE TABLE `blog_posts_metadata` (
   `post_id` bigint(20) NOT NULL,
   `category` varchar(512) NOT NULL,
   `revision_id` bigint(20) NOT NULL,
+  `publishedOn` timestamp NOT NULL DEFAULT current_timestamp(),
   `lastUpdated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -112,8 +118,10 @@ CREATE TABLE `blog_posts_metadata` (
 -- Dumping data for table `blog_posts_metadata`
 --
 
-INSERT INTO `blog_posts_metadata` (`map_id`, `post_id`, `category`, `revision_id`, `lastUpdated`, `timestamp`) VALUES
-(1, 2, 'Sample', 0, '2020-01-12 16:30:06', '2020-01-12 16:30:06');
+INSERT INTO `blog_posts_metadata` (`map_id`, `post_id`, `category`, `revision_id`, `publishedOn`, `lastUpdated`, `timestamp`) VALUES
+(1, 2, 'Sample', 0, '2020-01-13 17:33:04', '2020-01-12 16:30:06', '2020-01-12 16:30:06'),
+(3, 3, 'Gaming', 1, '2020-01-13 17:33:42', '2020-01-13 17:36:27', '2020-01-13 17:33:42'),
+(4, 4, 'Unknown', 0, '2020-01-12 18:30:00', '2020-01-11 18:30:00', '2020-01-13 17:34:42');
 
 -- --------------------------------------------------------
 
@@ -357,7 +365,8 @@ ALTER TABLE `blog_posts_content`
 --
 ALTER TABLE `blog_posts_metadata`
   ADD PRIMARY KEY (`map_id`),
-  ADD UNIQUE KEY `post_id` (`post_id`,`revision_id`);
+  ADD UNIQUE KEY `post_id` (`post_id`,`revision_id`),
+  ADD UNIQUE KEY `post_id_2` (`post_id`);
 
 --
 -- Indexes for table `blog_roles`
@@ -427,19 +436,19 @@ ALTER TABLE `blog_comments_metadata`
 -- AUTO_INCREMENT for table `blog_posts`
 --
 ALTER TABLE `blog_posts`
-  MODIFY `post_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `post_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `blog_posts_content`
 --
 ALTER TABLE `blog_posts_content`
-  MODIFY `map_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `map_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `blog_posts_metadata`
 --
 ALTER TABLE `blog_posts_metadata`
-  MODIFY `map_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `map_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `blog_roles`

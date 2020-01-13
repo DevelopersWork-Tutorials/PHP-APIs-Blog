@@ -3,6 +3,9 @@
 include_once './database/index.php';
 include_once './autheticate/index.php';
 include_once './authorise/index.php';
+include_once './content/posts/index.php';
+
+
 session_start();
 // unset($_SESSION);
 class V1{
@@ -16,6 +19,7 @@ class V1{
 
       $authenticate = new Autheticate($db);
       $authorise = new Authorise($db);
+      $posts = new Posts($db);
 
       $response = array();
       $response["data"] = array();
@@ -60,6 +64,13 @@ class V1{
         case "/unsetClaim":
           $authorise->unsetClaim($_POST);
           $response = $authorise->getResponse();
+          break;
+        case "/readPost":
+        break;
+        case "/getPosts":
+          $posts->get($_POST);
+          $response = $posts->getResponse();
+          break;
           break;
         default:
           // echo "400 BAD REQUEST";
