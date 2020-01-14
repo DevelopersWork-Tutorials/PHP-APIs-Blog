@@ -14,6 +14,7 @@ class V1{
     }
 
     function handleRoute($route){
+
       $db = new Database();
       $db->connect();
 
@@ -66,11 +67,12 @@ class V1{
           $response = $authorise->getResponse();
           break;
         case "/readPost":
+          $posts->read($_REQUEST);
+          $response = $posts->getResponse();
         break;
         case "/getPosts":
-          $posts->get($_POST);
+          $posts->get($_REQUEST);
           $response = $posts->getResponse();
-          break;
           break;
         default:
           // echo "400 BAD REQUEST";
@@ -96,6 +98,7 @@ class V1{
 }
 
 $route = str_replace("/blog/api/v1","",$_SERVER["REQUEST_URI"]);
+$route = explode("?",$route)[0];
 
 $api = new V1();
 $api->handleRoute($route);
