@@ -35,43 +35,47 @@ class V1{
           $authenticate->logout();
           $response = $authenticate->getResponse();
           break;
-        case "/isUserLoggedIn": 
+        case "/isuserloggedin": 
           $response = $authenticate->isLoggedIn();
           break;
         case "/register":
           $authenticate->register($_POST);
           $response = $authenticate->getResponse();
           break;
-        case "/changePassword":
+        case "/changepassword":
           $authenticate->changePassword($_POST);
           $response = $authenticate->getResponse();
           break;
-        case "/getClaims":
+        case "/getclaims":
           $authorise->getClaims();
           $response = $authorise->getResponse();
           break;
-        case "/setRole":
+        case "/setrole":
           $authorise->setRole($_POST);
           $response = $authorise->getResponse();
           break;
-        case "/setServices":
+        case "/setservices":
           $authorise->setServices($_POST);
           $response = $authorise->getResponse();
           break;
-        case "/createRole":
+        case "/createrole":
           $authorise->createRole($_POST);
           $response = $authorise->getResponse();
           break;
-        case "/unsetClaim":
+        case "/unsetclaim":
           $authorise->unsetClaim($_POST);
           $response = $authorise->getResponse();
           break;
-        case "/readPost":
+        case "/readpost":
           $posts->read($_REQUEST);
           $response = $posts->getResponse();
         break;
-        case "/getPosts":
+        case "/getposts":
           $posts->get($_REQUEST);
+          $response = $posts->getResponse();
+          break;
+        case "/createpost":
+          $posts->create($_POST);
           $response = $posts->getResponse();
           break;
         default:
@@ -99,6 +103,7 @@ class V1{
 
 $route = str_replace("/blog/api/v1","",$_SERVER["REQUEST_URI"]);
 $route = explode("?",$route)[0];
+$route = strtolower($route);
 
 $api = new V1();
 $api->handleRoute($route);
