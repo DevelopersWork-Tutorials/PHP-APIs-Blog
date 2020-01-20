@@ -78,6 +78,10 @@ class V1{
           $posts->create($_POST);
           $response = $posts->getResponse();
           break;
+        case "/publishpost":
+          $posts->publish($_POST);
+          $response = $posts->getResponse();
+          break;
         default:
           // echo "400 BAD REQUEST";
           break;

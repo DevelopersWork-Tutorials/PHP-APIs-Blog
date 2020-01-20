@@ -110,6 +110,25 @@ class Database{
         return $this->handleResponse($result);
     }
 
+    function readSimpleAND($tablename,$columnnames,$whereColumn,$whereValue){
+        // select (columnnames) from tablename where col1=val;
+
+        if($this->isConnected == false)
+            return false;
+
+        $whereClause = "";
+        for($i=0;$i<count($whereColumn);$i++){
+            $whereClause .= "".$whereColumn[$i]."='".$whereValue[$i]."' AND ";
+        }
+        $whereClause = rtrim($whereClause,"AND ");
+
+        $query = "SELECT $columnnames FROM $tablename WHERE $whereClause;";
+        // echo $query;
+        $result = $this->connection->query($query);
+
+        return $this->handleResponse($result);
+    }
+
     function readSimple($tablename,$columnnames,$whereColumn,$whereValue){
         // select (columnnames) from tablename where col1=val;
 

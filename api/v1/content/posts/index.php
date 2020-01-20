@@ -84,6 +84,54 @@ class Posts{
     return $this->setResponse();
   }
 
+  function publish($request){
+    if(!isset($_SESSION["uid"])){
+      $this->status = 400;
+      $this->response["data"] = array(
+        "code" => "auth/incorrect-details",
+        "message" => "user not logged in"
+      );
+      return $this->setResponse();
+    }
+
+    if(!isset($request["postid"]) || !isset($request["revisionid"])){
+      $this->status = 400;
+      $this->response["data"] = array(
+        "code" => "post/incorrect-details",
+        "message" => "post id or revision id doesn't exist",
+        "error" => "parameters"
+      );
+      return $this->setResponse();
+    }
+    $postid = $request["postid"];
+    $revisionid = $request["revisionid"];
+
+    // Start code here
+    $result = $this->db->readSimpleAND("blog_posts_content","map_id",array("post_id","post_revision"),array($postid,$revisionid));
+    if($result["query_error"]){
+      $this->status = $result["query_error"];
+      return $this->setResponse();
+    }if($result["length"] < 1){
+      $this->status = 400;
+      $this->response["data"] = array(
+        "code" => "post/incorrect-details",
+        "message" => "post id or revision id doesn't exist",
+        "error" => "parameters"
+      );
+      return $this->setResponse();
+    }
+
+    $result = $this->db->updateSimple("blog_posts_metadata","revision_id",$revisionid,"post_id",$postid);
+    if($result["query_error"]){
+      $this->status = $result["query_error"];
+      return $this->setResponse();
+    }
+    
+    $this->status = 200;
+    $this->response["data"] = array( "status" => true );
+    return $this->setResponse();
+  }
+
   function update(){}
 
   function delete(){}
