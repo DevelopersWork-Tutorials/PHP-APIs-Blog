@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 20, 2020 at 05:31 PM
+-- Generation Time: Jan 21, 2020 at 05:43 PM
 -- Server version: 10.3.16-MariaDB
 -- PHP Version: 7.3.6
 
@@ -248,7 +248,7 @@ INSERT INTO `blog_posts_metadata` (`map_id`, `post_id`, `category`, `revision_id
 (5, 7, 'unknown', 0, '2020-01-19 16:40:36', '2020-01-20 16:29:24', '2020-01-19 16:40:36'),
 (6, 8, 'unknown', 0, '2020-01-19 16:44:53', '2020-01-20 16:18:14', '2020-01-19 16:44:53'),
 (7, 9, 'unknown', -1, '2020-01-19 16:46:25', '2020-01-19 16:46:25', '2020-01-19 16:46:25'),
-(8, 11, 'unknown', -1, '2020-01-19 16:51:46', '2020-01-19 16:51:46', '2020-01-19 16:51:46'),
+(8, 11, 'unknown', 0, '2020-01-19 16:51:46', '2020-01-21 16:42:32', '2020-01-19 16:51:46'),
 (9, 13, 'unknown', -1, '2020-01-19 16:53:13', '2020-01-19 16:53:13', '2020-01-19 16:53:13'),
 (10, 14, 'unknown', -1, '2020-01-19 16:54:11', '2020-01-19 16:54:11', '2020-01-19 16:54:11');
 
@@ -296,6 +296,8 @@ CREATE TABLE `blog_roles_services_map` (
 --
 
 INSERT INTO `blog_roles_services_map` (`map_id`, `role_id`, `service_id`) VALUES
+(7, 0, 7),
+(6, 1, 2),
 (1, 3, 1),
 (3, 4, 13),
 (2, 5, 3),
@@ -369,7 +371,8 @@ INSERT INTO `blog_services` (`service_id`, `service_name`, `service_parent`, `ti
 (14, 'ROLES', NULL, '2019-12-31 15:24:02'),
 (15, 'CREATE', 14, '2019-12-31 15:24:31'),
 (16, 'UPDATE', 14, '2019-12-31 15:24:31'),
-(17, 'ASSIGN', 14, '2019-12-31 15:24:43');
+(17, 'ASSIGN', 14, '2019-12-31 15:24:43'),
+(18, 'PUBLISH', 2, '2020-01-21 16:02:59');
 
 -- --------------------------------------------------------
 
@@ -589,7 +592,7 @@ ALTER TABLE `blog_roles`
 -- AUTO_INCREMENT for table `blog_roles_services_map`
 --
 ALTER TABLE `blog_roles_services_map`
-  MODIFY `map_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `map_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `blog_roles_services_users_map`
@@ -601,7 +604,7 @@ ALTER TABLE `blog_roles_services_users_map`
 -- AUTO_INCREMENT for table `blog_services`
 --
 ALTER TABLE `blog_services`
-  MODIFY `service_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `service_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `blog_users`

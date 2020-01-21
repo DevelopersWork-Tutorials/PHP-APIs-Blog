@@ -5,10 +5,11 @@ class Posts{
   private $status;
   private $response;
 
-  function __construct($db){
+  function __construct($db,$auth){
     $this->db = $db;
     $this->status = 200;
     $this->response = array();
+    $this->auth = $auth;
   }
 
   function create($request){
@@ -85,8 +86,9 @@ class Posts{
   }
 
   function publish($request){
-    if(!isset($_SESSION["uid"])){
+    if(!isset($_SESSION["uid"]) || !isset($_SESSION["claims"])){
       $this->status = 400;
+      $this->auth->logout();
       $this->response["data"] = array(
         "code" => "auth/incorrect-details",
         "message" => "user not logged in"
@@ -105,6 +107,32 @@ class Posts{
     }
     $postid = $request["postid"];
     $revisionid = $request["revisionid"];
+
+
+    // Check the permission
+    $flag = 0;
+    for($i=0;$i<count($_SESSION["claims"]);$i++){
+      if($_SESSION["claims"][$i]["service_name"] == "PUBLISH"){
+        $flag = 1;
+        $result = $this->db->readSimpleAND("blog_posts","post_id",array("post_id","post_author_id"),array($postid,$_SESSION["uid"]));
+        if($result["query_error"]){
+          $this->status = $result["query_error"];
+          return $this->setResponse();
+        }if($result["length"] < 1){
+          $flag = 0;
+          break;
+        }
+      }
+    }
+    if(!$flag){
+      $this->status = 400;
+      $this->response["data"] = array(
+        "code" => "post/incorrect-auth",
+        "message" => "no permission to perform this operation",
+        "error" => "authorisation"
+      );
+      return $this->setResponse();
+    }
 
     // Start code here
     $result = $this->db->readSimpleAND("blog_posts_content","map_id",array("post_id","post_revision"),array($postid,$revisionid));

@@ -20,7 +20,7 @@ class V1{
 
       $authenticate = new Autheticate($db);
       $authorise = new Authorise($db);
-      $posts = new Posts($db);
+      $posts = new Posts($db,$authenticate);
 
       $response = array();
       $response["data"] = array();
@@ -28,6 +28,7 @@ class V1{
         case "/login":
           // echo "LOGIN PAGE";
           $authenticate->login($_POST);
+          $authorise->getClaims();
           $authorise->getPriority();
           $response = $authenticate->getResponse();
           break;
