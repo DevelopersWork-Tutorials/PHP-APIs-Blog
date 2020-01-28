@@ -119,9 +119,25 @@ class Posts{
           $this->status = $result["query_error"];
           return $this->setResponse();
         }if($result["length"] < 1){
-          $flag = 0;
-          break;
+          if($flag == 0){
+            break;
+          }
+          $flag = -1;
         }
+      }
+      if($_SESSION["claims"][$i]["service_name"] == "PUBLISH_OTHERS"){
+        $result = $this->db->readSimpleAND("blog_posts","post_id",array("post_id"),array($postid));
+          if($result["query_error"]){
+            $this->status = $result["query_error"];
+            return $this->setResponse();
+          }
+          if($result["length"] < 1){
+            if($flag == -1){
+              $flag = 0;
+              break;
+            }
+            $flag = 0;
+          }
       }
     }
     if(!$flag){
