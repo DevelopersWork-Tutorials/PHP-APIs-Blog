@@ -16,19 +16,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Dashboard - Developers@Work</title>
-  <script src="/blog/components/dashboard/script.js?v=1.1"></script>
+  <script src="/blog/components/dashboard/script.js?v=1.2"></script>
   <link rel="stylesheet" href="/blog/components/dashboard/style.css">
 
 </head>
 <body>
-  
-  <h1>Welcome, <?php echo $_SESSION["username"]; ?></h1>
-
+  <div id="dashboard">
+    <h1>Welcome, <?php echo $_SESSION["username"]; ?></h1>
+    <script>getServices()</script>
   <a href="/blog/changePassword">
     <button>Change Password</button>
   </a>
   <button type="" onClick="logout()">Logout</button>
+  </div>
   <H6 id="response"><H6>
-  <!-- <script>login()</script> -->
 </body>
 </html>
