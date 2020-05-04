@@ -29,7 +29,8 @@
           include_once "./components/dashboard/index.php";
           break;
         default:
-          echo "404 BAD REQUEST";
+          include_once "./components/posts/index.php";
+          // echo "404 BAD REQUEST";
           break;
       }
 

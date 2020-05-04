@@ -181,19 +181,18 @@ class Posts{
   function delete(){}
 
   function read($request){
-    if(!isset($request["postid"]) || !isset($request["revisionid"])){
+    if(!isset($request["postid"])){
       $this->status = 400;
       $this->response["data"] = array(
         "code" => "post/incorrect-details",
-        "message" => "post id or revision id doesn't exist",
+        "message" => "post id doesn't exist",
         "error" => "parameters"
       );
       return $this->setResponse();
     }
     $post_id = $request["postid"];
-    $revision_id = $request["revisionid"];
 
-    $query = "SELECT post_content FROM `blog_posts_content` WHERE post_id=$post_id and post_revision=$revision_id order by post_part";
+    $query = "SELECT pc.post_content FROM blog_posts_metadata pm,blog_posts_content pc WHERE pm.post_id=$post_id and pm.post_id = pc.post_id and pc.post_revision>=0 and pc.post_revision=pm.revision_id order by post_part";
 
     $result = $this->db->query($query);
     if($result["query_error"]){

@@ -33,29 +33,27 @@
     <div class="row" id="posts_container">
 
       <script>
+        const formData = new FormData();
+        formData.append("offset",0)
+        formData.append("limit",6)
         fetch("http://localhost/blog/api/v1/getPosts",{
           method : "POST",
-          headers  : {
-            'Accept-Type' : 'application/json',
-            'Content-Type' : 'application/json'
-          },
-          body : JSON.stringify({
-            offset  : 0,
-            limit : 6
-          })
+          body : formData
         }).then(res => res.json())
         .then(res => {
           const posts = res.data.posts
           posts.map(post => {
             const card = document.createElement('div')
             card.setAttribute("class","card col-4")
-
+            const date = post.publishedOn.split(" ")[0]
+            const year = date.split("-")[0]
+            // POST URL : /blog/posts/<author>/<year>/<month>/<post_title>-<post_id>.html
             card.innerHTML = '<div class="card-body">\
                 <h5 class="card-title">'+post.title+'</h5>\
-                <h6 class="card-subtitle mb-2 text-muted">'+post.publishedOn+'</h6>\
+                <h6 class="card-subtitle mb-2 text-muted">'+date+'</h6>\
                 <p class="card-text"></p>\
                 <a href="#" class="card-link">'+post.author+'</a>\
-                <a href="#" class="btn btn-outline-secondary card-link">VIEW POST</a>\
+                <a href="/blog/posts/'+post.author+'/'+year+'/'+post.title.toLowerCase().split(" ").join("-")+'-'+post.id+'.html" class="btn btn-outline-secondary card-link">VIEW POST</a>\
               </div>'
 
             document.getElementById('posts_container').appendChild(card)
