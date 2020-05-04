@@ -1,5 +1,6 @@
 <script src="/blog/includes/jquery-3.4.1.min.js"></script>
-<link rel="stylesheet" href="/blog/style.css?v=1">
+<link rel="stylesheet" href="/blog/includes/bootstrap-4.0.0.min.css"/>
+<link rel="stylesheet" href="/blog/style.css?v=1.1"/>
 
 <script async src="/blog/script.js"></script>
 

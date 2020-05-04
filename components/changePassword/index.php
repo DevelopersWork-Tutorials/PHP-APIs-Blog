@@ -20,14 +20,20 @@
   <link rel="stylesheet" href="/blog/components/changePassword/style.css">
 
 </head>
-<body>
+<body class="container">
   
-  <form name="changePasswordForm" action="" method="POST" onsubmit="changePassword();return false;">
-    <div>Old Password:<input type="password" name="password"/></div>
-    <div>New Password:<input type="password" name="new_password"/></div>
-    <div>Confirm New Password:<input type="text" name="confirm_password"/></div>
+  <form name="changePasswordForm" class="container-fluid" action="" method="POST" onsubmit="changePassword();return false;">
+    <div class="row form-group">
+      <label>Old Password:</label>
+      <input class="form-control" type="password" name="password"/></div>
+    <div class="row form-group">
+      <label>New Password:</label>
+      <input class="form-control" type="password" name="new_password"/></div>
+    <div class="row form-group">
+      <label>Confirm New Password:</label>
+      <input class="form-control" type="text" name="confirm_password"/></div>
     <div style="display:none">Username:<input type="text" name="username" value="<?php echo $_SESSION['username']?>"/></div>
-    <div><button type="submit" name="submit">UPDATE PASSWORD</button></div>
+    <div><button class="btn btn-outline-primary" type="submit" name="submit">UPDATE PASSWORD</button></div>
   </form>
   <H6 id="response"><H6>
   <!-- <script>login()</script> -->

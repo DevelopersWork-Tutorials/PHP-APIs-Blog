@@ -35,10 +35,11 @@ function getServices() {
                 const button = document.createElement("button")
 
                 button.innerText = service.service_name
+                button.setAttribute("class", "btn btn-outline-primary")
                 a.append(button)
                 a.href = "/blog/" + service.service_name.toLowerCase()
 
-                document.getElementById("dashboard").append(a)
+                document.getElementById("dashboard").appendChild(a)
                 return a
             })
 

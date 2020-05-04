@@ -227,8 +227,8 @@ class Posts{
     if(isset($request["postid"]))
       $post_id = "'".$request["postid"]."'";
     
-    $query = "SELECT post_id,category,revision_id,publishedOn FROM `blog_posts_metadata` WHERE (category=$category) and (post_id=$post_id) order by publishedOn DESC limit $limit OFFSET $offset";
-
+    $query = "SELECT p.post_id as id,pm.category,p.post_title title,u.username author,publishedOn FROM blog_posts_metadata pm,blog_users u,blog_posts p WHERE pm.revision_id >= 0 and u.uid=p.post_author_id and pm.post_id=p.post_id and (pm.category=$category) and (p.post_id=$post_id) order by pm.publishedOn DESC limit $limit OFFSET $offset";
+    
     $result = $this->db->query($query);
     if($result["query_error"]){
       $this->status = $result["query_error"];

@@ -20,12 +20,18 @@
   <link rel="stylesheet" href="/blog/components/login/style.css?v=1.0">
 
 </head>
-<body>
+<body class="container">
   
-  <form name="loginForm" action="" method="POST" onsubmit="login();return false;">
-    <div>Username:<input type="text" name="username"/></div>
-    <div>Password:<input type="password" name="password"/></div>
-    <div><button type="submit" name="submit">LOGIN</button></div>
+  <form class="container-fluid" name="loginForm" action="" method="POST" onsubmit="login();return false;">
+    <div class="row form-group">
+      <label>Username:</label>
+      <input class="form-control" type="text" name="username"/>
+    </div>
+    <div class="row form-group">
+      <label>Password:</label>
+      <input class="form-control" type="password" name="password"/>
+    </div>
+    <div class="row"><button class="btn btn-outline-primary" type="submit" class="btn" name="submit">LOGIN</button></div>
   </form>
   <H6 id="response"><H6>
   <!-- <script>login()</script> -->
